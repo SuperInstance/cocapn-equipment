@@ -1,61 +1,78 @@
-# Cocapn Equipment
+# Cocapn Equipment Library
 
-Shared equipment library for the Lucineer fleet. Each module is standalone — import what you need.
+Build agents on your own terms. This is a collection of standalone modules that handle common infrastructure concerns, extracted from the vessels running in the Cocapn Fleet. Use one piece or use them all.
 
-> Equipment effects WHAT the agent perceives. Skills effect HOW the agent thinks.
+---
+
+## Why this exists
+
+Agent frameworks often bundle everything together. This library is the opposite: independent, composable units for key management, memory, and trust. It’s the same code used in production, but you control what you deploy.
+
+---
+
+## What’s inside
+
+*   **Zero Dependencies.** Each module is self-contained and runs on standard Cloudflare Workers. No `node_modules` surprises.
+*   **Fork First.** The code is yours. Deploy it, modify it—no upstream updates will break your running agents.
+*   **Explicit Behavior.** No hidden magic or background processes. Code only runs when you call it.
+*   **Granular Imports.** Import a single module without pulling in the rest of the library.
+
+**One Limitation:** These modules are built for the Cloudflare Workers runtime and its ecosystem (like KV for persistence). They are not generic Node.js packages.
+
+---
+
+## Try It Live
+
+Test endpoints and explore module documentation directly:
+[https://cocapn-equipment.casey-digennaro.workers.dev](https://cocapn-equipment.casey-digennaro.workers.dev)
+
+---
+
+## Quick Start
+
+1.  Fork this repository.
+2.  Deploy any module to Cloudflare Workers (compatible with the free tier).
+3.  Import the specific functions you need into your agent code.
+
+---
 
 ## Modules
 
-| Module | Source | What It Does |
-|---|---|---|
-| `byok.ts` | studylog-ai | BYOK v2 — 20+ LLM providers, zero keys in code |
-| `trust.ts` | fleet-orchestrator | Event-count trust with severity weights |
-| `crystal.ts` | fleet-orchestrator | Cache/promote/decay crystallized knowledge |
-| `evaporation*.ts` | studylog-ai | Self-cleaning KV with TTL |
-| `confidence.ts` | studylog-ai | Per-query confidence tracking |
-| `deadband.ts` | studylog-ai | Response deduplication cache |
-| `model-router.ts` | studylog-ai | Task → model routing |
-| `multi-profile.ts` | studylog-ai | Multi-user profile management |
-| `tutor.ts` | studylog-ai | Socratic method branching tutor |
-| `dice.ts` | dmlog-ai | TTRPG dice with modifiers, advantage/disadvantage |
-| `pii.ts` | log-origin | PII detection, dehydrate, rehydrate |
-| `bootcamp.ts` | git-agent | Ground truth assessment, skill distillation |
-| `dead-reckoning.ts` | dead-reckoning-engine | Storyboard→animate→publish pipeline |
-| `keeper.ts` | The Keeper's Architecture | Hot/warm/cold memory tiers + creative GC |
-| `cross-cocapn.ts` | studylog-ai | Cross-vessel knowledge transfer |
-| `repo-agent.ts` | studylog-ai | Repo agent actions |
-| `soft-actualize.ts` | studylog-ai | Soft actualization scoring |
-| `seed-loader.ts` | studylog-ai | Seed data loading |
-| `response-logger.ts` | studylog-ai | Response logging |
-| `brain-lesson.ts` | studylog-ai | Interactive lesson engine |
+*   **BYOK v2** – Route requests across multiple LLM providers. API keys are stored as environment variables and never exposed in code or network traffic.
+*   **Trust System** – Reputation scoring based on event history. Gate actions or throttle interactions between agents.
+*   **Crystal Graph** – A cache for common model responses to help reduce redundant LLM calls.
+*   **Dead Reckoning** – A pattern for generating many low-cost outlines and selectively expanding only the best ones.
+*   **PII Handling** – Utilities to detect and manage personal data before it is sent to external APIs.
+*   **Keeper Memory** – A three-tier memory system (hot, warm, cold) that summarizes older entries instead of deleting them.
+*   **Bootcamp Training** – A set of standard routines to initialize a new agent's capabilities.
 
-## Usage
+---
 
-```typescript
-import { chat, PROVIDERS } from './src/byok.js';
-import { computeTrust, createTrustState } from './src/trust.js';
-import { cacheQuery, storeCrystal } from './src/crystal.js';
-import { dice, advantage } from './src/dice.js';
-import { detectPII, dehydrate, rehydrate } from './src/pii.js';
-import { hotGet, warmGet, coldGet, gc, store } from './src/keeper.js';
-import { storyboard, animate } from './src/dead-reckoning.js';
-import { assessShip, distillSkill } from './src/bootcamp.js';
+## Configuration Example: BYOK
+
+Set API keys in your Cloudflare Worker environment:
+
+```bash
+DEEPSEEK_API_KEY="your_key_here"
+DEEPINFRA_API_KEY="your_key_here"
 ```
 
-## Philosophy
+---
 
-- **Each module is standalone** — no dependencies between equipment modules
-- **Import what you need** — don't pay for what you don't use
-- **Zero runtime deps** — pure TypeScript, works in Cloudflare Workers, Deno, Bun, Node
-- **Equipment is outside the model** — it shapes what the agent perceives
-- **Skills are inside the model** — they shape how the agent thinks
+## Contributing
 
-## Fleet
+We follow a fork-first workflow. Test changes in your own deployment, then submit a pull request. All modules must remain standalone with zero cross-dependencies.
 
-[Capitaine (flagship)](https://github.com/Lucineer/capitaine) ·
-[Git-Agent (kernel)](https://github.com/Lucineer/git-agent) ·
-[All vessels](https://github.com/orgs/Lucineer/repositories)
+---
 
 ## License
 
-MIT · Superinstance & Lucineer (DiGennaro et al.)
+MIT License.
+
+Superinstance & Lucineer (DiGennaro et al.)
+
+---
+
+<div>
+<a href="https://the-fleet.casey-digennaro.workers.dev">⚓ The Fleet</a> · <a href="https://cocapn.ai">Cocapn</a>
+</div>

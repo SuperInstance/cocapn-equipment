@@ -1,78 +1,69 @@
 # Cocapn Equipment Library
 
-Build agents on your own terms. This is a collection of standalone modules that handle common infrastructure concerns, extracted from the vessels running in the Cocapn Fleet. Use one piece or use them all.
+You build an agent by assembling the parts you need, not by gluing together opaque packages. This is a shared library of components used within the Cocapn Fleet. Each module solves a common, infrastructural problem that every agent runtime eventually faces.
+
+**Live Instance:** https://cocapn-equipment.casey-digennaro.workers.dev
 
 ---
 
-## Why this exists
+## What's Here
+- **Zero Dependencies:** The library has no external npm packages. What you deploy is what runs.
+- **Fork-First:** You maintain your own copy. Updates are pulled voluntarily, not pushed.
+- **Cloudflare Workers Native:** Built for and tested on the Workers runtime. No adapters.
+- **Production-Proven:** Each module has been used in live systems and refined through failure.
 
-Agent frameworks often bundle everything together. This library is the opposite: independent, composable units for key management, memory, and trust. It’s the same code used in production, but you control what you deploy.
-
----
-
-## What’s inside
-
-*   **Zero Dependencies.** Each module is self-contained and runs on standard Cloudflare Workers. No `node_modules` surprises.
-*   **Fork First.** The code is yours. Deploy it, modify it—no upstream updates will break your running agents.
-*   **Explicit Behavior.** No hidden magic or background processes. Code only runs when you call it.
-*   **Granular Imports.** Import a single module without pulling in the rest of the library.
-
-**One Limitation:** These modules are built for the Cloudflare Workers runtime and its ecosystem (like KV for persistence). They are not generic Node.js packages.
-
----
-
-## Try It Live
-
-Test endpoints and explore module documentation directly:
-[https://cocapn-equipment.casey-digennaro.workers.dev](https://cocapn-equipment.casey-digennaro.workers.dev)
-
----
-
-## Quick Start
-
-1.  Fork this repository.
-2.  Deploy any module to Cloudflare Workers (compatible with the free tier).
-3.  Import the specific functions you need into your agent code.
+**One Limitation:** This is built specifically for Cloudflare's JS runtime. It won't run directly in Node.js without modification.
 
 ---
 
 ## Modules
+Import only what you need. Each module is a standalone set of functions.
 
-*   **BYOK v2** – Route requests across multiple LLM providers. API keys are stored as environment variables and never exposed in code or network traffic.
-*   **Trust System** – Reputation scoring based on event history. Gate actions or throttle interactions between agents.
-*   **Crystal Graph** – A cache for common model responses to help reduce redundant LLM calls.
-*   **Dead Reckoning** – A pattern for generating many low-cost outlines and selectively expanding only the best ones.
-*   **PII Handling** – Utilities to detect and manage personal data before it is sent to external APIs.
-*   **Keeper Memory** – A three-tier memory system (hot, warm, cold) that summarizes older entries instead of deleting them.
-*   **Bootcamp Training** – A set of standard routines to initialize a new agent's capabilities.
+| Module | Purpose |
+|---|---|
+| **BYOK v2** | Routes requests across multiple LLM providers using API keys stored only as environment variables. Includes failover. |
+| **Trust System** | A scoring mechanism for agents that decays over time and gates access to sensitive capabilities. |
+| **Crystal Graph** | A cache for expensive model responses (reasoning chains, conclusions) to avoid redundant computation. |
+| **Dead Reckoning** | A pattern to run a costly reasoning step once, then use cheaper, faster models for subsequent similar tasks. |
+| **Keeper Memory** | Tiered storage (hot/warm/cold) for agent memory with a policy for intentional forgetting. |
+| **PII Dehydrate** | Removes personally identifiable information from text before processing, with a method for safe rehydration. |
+| **Boot Camp** | A structure for gradually granting an agent new capabilities based on demonstrated performance. |
 
 ---
 
-## Configuration Example: BYOK
+## Quick Start
+1.  **Fork** this repository.
+2.  **Deploy** it to Cloudflare Workers.
+3.  Copy the specific module files you need into your own agent project.
 
-Set API keys in your Cloudflare Worker environment:
+You can test all modules interactively at the live URL.
 
-```bash
-DEEPSEEK_API_KEY="your_key_here"
-DEEPINFRA_API_KEY="your_key_here"
+---
+
+## Configuration
+API keys are managed exclusively through Cloudflare Worker environment variables. They are never embedded in code or logs.
+
+Example environment variables:
+```
+DEEPSEEK_API_KEY="your_key"
+ANTHROPIC_API_KEY="your_key"
+OPENROUTER_API_KEY="your_key"
 ```
 
 ---
 
 ## Contributing
-
-We follow a fork-first workflow. Test changes in your own deployment, then submit a pull request. All modules must remain standalone with zero cross-dependencies.
+The fork-first model means you own your deployment. If you build a robust, zero-dependency module compatible with Workers, contributions are welcome via pull request.
 
 ---
 
 ## License
-
 MIT License.
 
-Superinstance & Lucineer (DiGennaro et al.)
+Superinstance & Lucineer (DiGennaro et al.).
 
 ---
 
 <div>
-<a href="https://the-fleet.casey-digennaro.workers.dev">⚓ The Fleet</a> · <a href="https://cocapn.ai">Cocapn</a>
+<a href="https://the-fleet.casey-digennaro.workers.dev">The Fleet</a> · <a href="https://cocapn.ai">Cocapn</a>
 </div>
